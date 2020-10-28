@@ -11,25 +11,33 @@ class App extends Component {
 
   state = {
     todos: [
-      {
-        task: "Completed task",
-        taskState: "active",
-        id: 1,
-        createDate: new Date(),
-      },
-      {
-        task: "Editing task",
-        // taskState: "editing",
-        id: 2,
-        createDate: new Date(),
-      },
-      {
-        task: "Active task",
-        taskState: "active",
-        id: 3,
-        createDate: new Date(),
-      },
+      this.createTodoTask("Completed Task"),
+      this.createTodoTask("Editing task"),
+      this.createTodoTask("Active task"),
     ],
+    nowShowingTasks: "All",
+  };
+
+  createTodoTask(task) {
+    return {
+      task,
+      done: false,
+      editing: false,
+      visible: true,
+      createDate: new Date(),
+      id: this.currentId++,
+    };
+  }
+
+  addItem = (text) => {
+    this.setState(({ todos }) => {
+      const newTask = this.createTodoTask(text);
+      const newArr = [...todos, newTask];
+
+      return {
+        todos: newArr,
+      };
+    });
   };
 
   delteItem = (id) => {
@@ -43,14 +51,93 @@ class App extends Component {
     });
   };
 
+  onDeleteCompleted = () => {
+    this.state.todos.forEach(({ done, id }) => {
+      if (done) this.delteItem(id);
+    });
+  };
+
+  toggleProperty(arr, id, propName, value) {
+    const idx = arr.findIndex((el) => el.id === id);
+
+    const oldTask = arr[idx];
+    let newTask;
+
+    if (propName !== "task") {
+      newTask = { ...oldTask, [propName]: !oldTask[propName] };
+    } else if (propName === "visible") {
+      newTask = { ...oldTask, visible: value };
+    } else {
+      newTask = { ...oldTask, task: value, editing: false };
+    }
+
+    return [...arr.slice(0, idx), newTask, ...arr.slice(idx + 1)];
+  }
+
+  onToggleDone = (id) => {
+    this.setState(({ todos }) => {
+      return {
+        todos: this.toggleProperty(todos, id, "done"),
+      };
+    });
+  };
+
+  onToggleEditing = (id) => {
+    this.setState(({ todos }) => {
+      return {
+        todos: this.toggleProperty(todos, id, "editing"),
+      };
+    });
+  };
+
+  onEditTask = (id, text) => {
+    this.setState(({ todos }) => {
+      return {
+        todos: this.toggleProperty(todos, id, "task", text),
+      };
+    });
+  };
+
+  toggleShowingTasks = (filter) => {
+    const newArr = this.state.todos.map((item) => {
+      const newItem = { ...item };
+      if (filter === "All") newItem.visible = true;
+      if (filter === "Active" && !newItem.done) newItem.visible = true;
+      if (filter === "Active" && newItem.done) newItem.visible = false;
+      if (filter === "Completed" && newItem.done) newItem.visible = true;
+      if (filter === "Completed" && !newItem.done) newItem.visible = false;
+      return newItem;
+    });
+    this.setState(({ todos }) => {
+      return {
+        todos: newArr,
+        nowShowingTasks: filter,
+      };
+    });
+  };
+
   render() {
     const { todos } = this.state;
+
+    const tasksLeft = todos.filter((task) => !task.done).length;
+
     return (
       <section className="todoapp">
-        <Header />
+        <Header onItemAdded={this.addItem} />
         <section className="main">
-          <TaskList todos={todos} onDelete={this.delteItem} />
-          <Footer />
+          <TaskList
+            todos={todos}
+            onDelete={this.delteItem}
+            onToggleDone={this.onToggleDone}
+            onToggleEditing={this.onToggleEditing}
+            onEditTask={this.onEditTask}
+          />
+          .
+          <Footer
+            tasksLeft={tasksLeft}
+            toggleShowingTasks={this.toggleShowingTasks}
+            onDeleteCompleted={() => this.onDeleteCompleted()}
+          />
         </section>
       </section>
     );

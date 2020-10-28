@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 
-import "./NewTaskForm.scss";
+import "./TaskEditForm.scss";
 
-class NewTaskForm extends Component {
-  state = { text: "" };
+class TaskEditForm extends Component {
+  state = {
+    text: this.props.task,
+  };
 
   onTextChange = (e) => {
     this.setState({
@@ -13,20 +15,17 @@ class NewTaskForm extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    this.props.onItemAdded(this.state.text);
-    this.setState({
-      text: "",
-    });
+    this.props.onEditTask(this.props.id, this.state.text);
   };
 
   render() {
     return (
       <form onSubmit={this.onSubmit}>
         <input
-          className="new-todo"
-          placeholder="What needs to be done?"
-          onChange={this.onTextChange}
+          type="text"
+          className="edit"
           value={this.state.text}
+          onChange={this.onTextChange}
           autoFocus
         />
       </form>
@@ -34,4 +33,4 @@ class NewTaskForm extends Component {
   }
 }
 
-export default NewTaskForm;
+export default TaskEditForm;
