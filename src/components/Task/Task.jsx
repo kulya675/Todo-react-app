@@ -1,10 +1,27 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { formatDistanceToNow } from "date-fns";
 
 import TaskEditForm from "../TaskEditForm/";
 import "./Task.scss";
 
 class Task extends Component {
+  static defaultProps = {
+    done: false,
+    editing: false,
+    createDate: new Date(),
+  };
+
+  static propTypes = {
+    task: PropTypes.string,
+    createDate: PropTypes.instanceOf(Date).isRequired,
+    done: PropTypes.bool,
+    editing: PropTypes.bool,
+    onDelete: PropTypes.func,
+    onEditTask: PropTypes.func,
+    onToggleEditing: PropTypes.func,
+  };
+
   state = {
     checked: this.props.done,
   };
@@ -34,7 +51,6 @@ class Task extends Component {
 
     if (done) taskStyleClass = "completed";
     if (editing) taskStyleClass = "editing";
-
     return (
       <li className={taskStyleClass}>
         <div className="view">

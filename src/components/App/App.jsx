@@ -21,10 +21,8 @@ class App extends Component {
   createTodoTask(task) {
     return {
       task,
-      done: false,
-      editing: false,
+
       visible: true,
-      createDate: new Date(),
       id: this.currentId++,
     };
   }
@@ -65,8 +63,6 @@ class App extends Component {
 
     if (propName !== "task") {
       newTask = { ...oldTask, [propName]: !oldTask[propName] };
-    } else if (propName === "visible") {
-      newTask = { ...oldTask, visible: value };
     } else {
       newTask = { ...oldTask, task: value, editing: false };
     }
@@ -99,18 +95,8 @@ class App extends Component {
   };
 
   toggleShowingTasks = (filter) => {
-    const newArr = this.state.todos.map((item) => {
-      const newItem = { ...item };
-      if (filter === "All") newItem.visible = true;
-      if (filter === "Active" && !newItem.done) newItem.visible = true;
-      if (filter === "Active" && newItem.done) newItem.visible = false;
-      if (filter === "Completed" && newItem.done) newItem.visible = true;
-      if (filter === "Completed" && !newItem.done) newItem.visible = false;
-      return newItem;
-    });
     this.setState(({ todos }) => {
       return {
-        todos: newArr,
         nowShowingTasks: filter,
       };
     });
@@ -127,6 +113,7 @@ class App extends Component {
         <section className="main">
           <TaskList
             todos={todos}
+            filterState={this.state.nowShowingTasks}
             onDelete={this.delteItem}
             onToggleDone={this.onToggleDone}
             onToggleEditing={this.onToggleEditing}
