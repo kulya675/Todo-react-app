@@ -24,7 +24,10 @@ class Task extends Component {
     onToggleEditing: PropTypes.func.isRequired,
   };
 
-  state = {};
+  state = {
+    // eslint-disable-next-line react/destructuring-assignment
+    checked: this.props.done,
+  };
 
   onToggleComplete = () => {
     const { onToggleDone } = this.props;
