@@ -1,31 +1,23 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 
-import Header from "../Header";
-import Footer from "../Footer";
-import TaskList from "../TaskList";
+import Header from '../Header';
+import Footer from '../Footer';
+import TaskList from '../TaskList';
 
-import "./App.scss";
+import './App.scss';
 
 class App extends Component {
   currentId = 1;
 
   state = {
     todos: [
-      this.createTodoTask("Completed Task"),
-      this.createTodoTask("Editing task"),
-      this.createTodoTask("Active task"),
+      this.createTodoTask('Completed Task'),
+      this.createTodoTask('Editing task'),
+      this.createTodoTask('Active task'),
     ],
-    nowShowingTasks: "All",
+    nowShowingTasks: 'All',
   };
-
-  createTodoTask(task) {
-    return {
-      task,
-
-      visible: true,
-      id: this.currentId++,
-    };
-  }
 
   addItem = (text) => {
     this.setState(({ todos }) => {
@@ -50,30 +42,31 @@ class App extends Component {
   };
 
   onDeleteCompleted = () => {
-    this.state.todos.forEach(({ done, id }) => {
+    const { todos } = this.state;
+    todos.forEach(({ done, id }) => {
       if (done) this.delteItem(id);
     });
   };
 
-  toggleProperty(arr, id, propName, value) {
+  toggleProperty = (arr, id, propName, value) => {
     const idx = arr.findIndex((el) => el.id === id);
 
     const oldTask = arr[idx];
     let newTask;
 
-    if (propName !== "task") {
+    if (propName !== 'task') {
       newTask = { ...oldTask, [propName]: !oldTask[propName] };
     } else {
       newTask = { ...oldTask, task: value, editing: false };
     }
 
     return [...arr.slice(0, idx), newTask, ...arr.slice(idx + 1)];
-  }
+  };
 
   onToggleDone = (id) => {
     this.setState(({ todos }) => {
       return {
-        todos: this.toggleProperty(todos, id, "done"),
+        todos: this.toggleProperty(todos, id, 'done'),
       };
     });
   };
@@ -81,7 +74,7 @@ class App extends Component {
   onToggleEditing = (id) => {
     this.setState(({ todos }) => {
       return {
-        todos: this.toggleProperty(todos, id, "editing"),
+        todos: this.toggleProperty(todos, id, 'editing'),
       };
     });
   };
@@ -89,21 +82,29 @@ class App extends Component {
   onEditTask = (id, text) => {
     this.setState(({ todos }) => {
       return {
-        todos: this.toggleProperty(todos, id, "task", text),
+        todos: this.toggleProperty(todos, id, 'task', text),
       };
     });
   };
 
   toggleShowingTasks = (filter) => {
-    this.setState(({ todos }) => {
+    this.setState(() => {
       return {
         nowShowingTasks: filter,
       };
     });
   };
 
+  createTodoTask(task) {
+    return {
+      task,
+      visible: true,
+      id: Math.random() * 100,
+    };
+  }
+
   render() {
-    const { todos } = this.state;
+    const { todos, nowShowingTasks } = this.state;
 
     const tasksLeft = todos.filter((task) => !task.done).length;
 
@@ -113,7 +114,7 @@ class App extends Component {
         <section className="main">
           <TaskList
             todos={todos}
-            filterState={this.state.nowShowingTasks}
+            filterState={nowShowingTasks}
             onDelete={this.delteItem}
             onToggleDone={this.onToggleDone}
             onToggleEditing={this.onToggleEditing}
@@ -130,5 +131,7 @@ class App extends Component {
     );
   }
 }
+
+ReactDOM.render(<App />, document.getElementById('root'));
 
 export default App;

@@ -1,34 +1,38 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-import "./NewTaskForm.scss";
+import './NewTaskForm.scss';
 
 class NewTaskForm extends Component {
-  state = { text: "" };
+  state = { text: '' };
 
-  onTextChange = (e) => {
+  static propTypes = {
+    onItemAdded: PropTypes.func.isRequired,
+  };
+
+  onTextChange = (event) => {
     this.setState({
-      text: e.target.value,
+      text: event.target.value,
     });
   };
 
-  onSubmit = (e) => {
-    e.preventDefault();
-    this.props.onItemAdded(this.state.text);
+  onSubmit = (event) => {
+    const { onItemAdded } = this.props;
+    const { text } = this.state;
+
+    event.preventDefault();
+
+    onItemAdded(text);
     this.setState({
-      text: "",
+      text: '',
     });
   };
 
   render() {
+    const { text } = this.state;
     return (
       <form onSubmit={this.onSubmit}>
-        <input
-          className="new-todo"
-          placeholder="What needs to be done?"
-          onChange={this.onTextChange}
-          value={this.state.text}
-          autoFocus
-        />
+        <input className="new-todo" placeholder="What needs to be done?" onChange={this.onTextChange} value={text} />
       </form>
     );
   }

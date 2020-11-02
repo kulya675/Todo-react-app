@@ -1,7 +1,8 @@
-import React from "react";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import NewTaskForm from "../NewTaskForm";
-import "./Header.scss";
+import NewTaskForm from '../NewTaskForm';
+import './Header.scss';
 
 const Header = ({ onItemAdded }) => {
   return (
@@ -10,6 +11,10 @@ const Header = ({ onItemAdded }) => {
       <NewTaskForm onItemAdded={onItemAdded} />
     </header>
   );
+};
+
+Header.propTypes = {
+  onItemAdded: PropTypes.func.isRequired,
 };
 
 export default Header;

@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { formatDistanceToNow } from "date-fns";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { formatDistanceToNow } from 'date-fns';
 
-import TaskEditForm from "../TaskEditForm/";
-import "./Task.scss";
+import TaskEditForm from '../TaskEditForm';
+import './Task.scss';
 
 class Task extends Component {
   static defaultProps = {
@@ -13,66 +13,50 @@ class Task extends Component {
   };
 
   static propTypes = {
-    task: PropTypes.string,
-    createDate: PropTypes.instanceOf(Date).isRequired,
+    task: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    createDate: PropTypes.instanceOf(Date),
     done: PropTypes.bool,
     editing: PropTypes.bool,
-    onDelete: PropTypes.func,
-    onEditTask: PropTypes.func,
-    onToggleEditing: PropTypes.func,
+    onDelete: PropTypes.func.isRequired,
+    onEditTask: PropTypes.func.isRequired,
+    onToggleDone: PropTypes.func.isRequired,
+    onToggleEditing: PropTypes.func.isRequired,
   };
 
-  state = {
-    checked: this.props.done,
-  };
+  state = {};
 
   onToggleComplete = () => {
-    this.props.onToggleDone();
+    const { onToggleDone } = this.props;
+    const { checked } = this.state;
+    onToggleDone();
     this.setState(() => {
       return {
-        checked: !this.state.checked,
+        checked: !checked,
       };
     });
   };
 
   render() {
-    const {
-      task,
-      createDate,
-      done,
-      editing,
-      id,
-      onDelete,
-      onToggleEditing,
-      onEditTask,
-    } = this.props;
+    const { task, createDate, done, editing, id, onDelete, onToggleEditing, onEditTask } = this.props;
+    const { checked } = this.state;
 
-    let taskStyleClass = "active";
+    let taskStyleClass = 'active';
 
-    if (done) taskStyleClass = "completed";
-    if (editing) taskStyleClass = "editing";
+    if (done) taskStyleClass = 'completed';
+    if (editing) taskStyleClass = 'editing';
     return (
       <li className={taskStyleClass}>
         <div className="view">
-          <input
-            className="toggle"
-            type="checkbox"
-            onChange={this.onToggleComplete}
-            checked={this.state.checked}
-          />
+          <input className="toggle" type="checkbox" onChange={this.onToggleComplete} checked={checked} />
           <label>
             <span className="description">{task}</span>
             <span className="created">{formatDistanceToNow(createDate)}</span>
           </label>
-          <button className="icon icon-edit" onClick={onToggleEditing}></button>
-          <button
-            className="icon icon-destroy"
-            onClick={() => onDelete(id)}
-          ></button>
+          <button type="button" className="icon icon-edit" onClick={onToggleEditing} label="edit" />
+          <button type="button" className="icon icon-destroy" onClick={() => onDelete(id)} label="delete" />
         </div>
-        {editing ? (
-          <TaskEditForm {...this.props} onEditTask={onEditTask} />
-        ) : null}
+        {editing ? <TaskEditForm {...this.props} onEditTask={onEditTask} /> : null}
       </li>
     );
   }
