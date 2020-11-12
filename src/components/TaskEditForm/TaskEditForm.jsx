@@ -5,15 +5,21 @@ import './TaskEditForm.scss';
 
 class TaskEditForm extends Component {
   state = {
-    // eslint-disable-next-line react/destructuring-assignment
-    text: this.props.task,
+    text: '',
   };
 
   static propTypes = {
     task: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
     onEditTask: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired,
   };
+
+  componentDidMount() {
+    const { task, onEdit, id } = this.props;
+    onEdit(id);
+    this.setState({ text: task });
+  }
 
   onTextChange = (event) => {
     this.setState({

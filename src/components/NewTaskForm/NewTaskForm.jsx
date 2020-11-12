@@ -22,6 +22,8 @@ class NewTaskForm extends Component {
 
     event.preventDefault();
 
+    if (!text) return;
+
     onItemAdded(text);
     this.setState({
       text: '',

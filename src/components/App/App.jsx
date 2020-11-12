@@ -79,6 +79,22 @@ class App extends Component {
     });
   };
 
+  onEdit = (id) => {
+    this.setState(({ todos }) => {
+      const newArr = todos.map((elem) => {
+        const newElem = { ...elem };
+        if (newElem.id !== id) {
+          newElem.editing = false;
+        }
+        return newElem;
+      });
+
+      return {
+        todos: newArr,
+      };
+    });
+  };
+
   onEditTask = (id, text) => {
     this.setState(({ todos }) => {
       return {
@@ -119,6 +135,7 @@ class App extends Component {
             onToggleDone={this.onToggleDone}
             onToggleEditing={this.onToggleEditing}
             onEditTask={this.onEditTask}
+            onEdit={this.onEdit}
           />
           .
           <Footer

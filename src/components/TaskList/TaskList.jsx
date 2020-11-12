@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Task from '../Task';
 import './TaskList.scss';
 
-const TaskList = ({ todos, filterState, onDelete, onToggleDone, onToggleEditing, onEditTask }) => {
+const TaskList = ({ todos, filterState, onDelete, onToggleDone, onToggleEditing, onEditTask, onEdit }) => {
   const newArr = todos.filter((item) => {
     if (filterState === 'All') return true;
     if (filterState === 'Active') return !item.done;
@@ -23,6 +23,7 @@ const TaskList = ({ todos, filterState, onDelete, onToggleDone, onToggleEditing,
         }}
         onToggleEditing={() => onToggleEditing(id)}
         onEditTask={onEditTask}
+        onEdit={onEdit}
       />
     );
   });
@@ -38,6 +39,7 @@ TaskList.propTypes = {
   onToggleDone: PropTypes.func.isRequired,
   onToggleEditing: PropTypes.func.isRequired,
   onEditTask: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
 };
 
 export default TaskList;
