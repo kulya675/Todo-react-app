@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import NewTaskForm from '../NewTaskForm';
 import './Header.scss';
 
-const Header = ({ onItemAdded }) => {
+const Header = ({ onItemAdded, onPlayTimer }) => {
   return (
     <header className="header">
       <h1>todos</h1>

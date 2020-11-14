@@ -9,6 +9,11 @@ import TaskEditForm from '../TaskEditForm';
 import './Task.scss';
 
 class Task extends Component {
+  state = {
+    // eslint-disable-next-line react/destructuring-assignment
+    checked: this.props.done,
+  };
+
   static defaultProps = {
     done: false,
     editing: false,
@@ -18,6 +23,8 @@ class Task extends Component {
   static propTypes = {
     task: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
+    // eslint-disable-next-line react/forbid-prop-types
+    timerCounter: PropTypes.number.isRequired,
     createDate: PropTypes.instanceOf(Date),
     done: PropTypes.bool,
     editing: PropTypes.bool,
@@ -26,11 +33,8 @@ class Task extends Component {
     onEdit: PropTypes.func.isRequired,
     onToggleDone: PropTypes.func.isRequired,
     onToggleEditing: PropTypes.func.isRequired,
-  };
-
-  state = {
-    // eslint-disable-next-line react/destructuring-assignment
-    checked: this.props.done,
+    onPlayTimer: PropTypes.func.isRequired,
+    onPauseTimer: PropTypes.func.isRequired,
   };
 
   onToggleComplete = () => {
@@ -44,14 +48,45 @@ class Task extends Component {
     });
   };
 
+  onTimerDone = () => {
+    const { checked } = this.state;
+    this.setState(() => {
+      return { checked: !checked };
+    });
+  };
+
   render() {
-    const { task, createDate, done, editing, id, onDelete, onToggleEditing, onEditTask, onEdit } = this.props;
+    const {
+      task,
+      timerCounter,
+      createDate,
+      done,
+      editing,
+      id,
+      onDelete,
+      onToggleEditing,
+      onEditTask,
+      onEdit,
+      onPlayTimer,
+      onPauseTimer,
+    } = this.props;
     const { checked } = this.state;
 
     let taskStyleClass = 'active';
 
+    const timerElem = timerCounter ? (
+      <Timer
+        time={timerCounter}
+        id={id}
+        onPlayTimer={onPlayTimer}
+        onPauseTimer={onPauseTimer}
+        onTimerDone={this.onTimerDone}
+      />
+    ) : null;
+
     if (done) taskStyleClass = 'completed';
     if (editing) taskStyleClass = 'editing';
+
     return (
       <li className={taskStyleClass}>
         <div className="view">
@@ -62,7 +97,7 @@ class Task extends Component {
           </label>
           <button type="button" className="icon icon-edit" onClick={onToggleEditing} label="edit" />
           <button type="button" className="icon icon-destroy" onClick={() => onDelete(id)} label="delete" />
-          <Timer />
+          {timerElem}
         </div>
         {editing ? <TaskEditForm {...this.props} onEditTask={onEditTask} onEdit={onEdit} /> : null}
       </li>
