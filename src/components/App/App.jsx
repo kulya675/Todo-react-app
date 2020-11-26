@@ -77,11 +77,12 @@ class App extends Component {
       if (propName === 'timerCounter') {
         if (newElem.timerCounter === 0) {
           this.setState(({ todos }) => {
-            return { todos: this.changeProperty(todos, id, 'timerPlaying', false) };
-          });
-          this.setState(({ todos }) => {
             return { todos: this.changeProperty(todos, id, 'done') };
           });
+          this.setState(({ todos }) => {
+            return { todos: this.changeProperty(todos, id, 'timerPlaying', false) };
+          });
+
           return newElem;
         }
         newElem.timerCounter = elem.timerCounter - 1000;
@@ -160,6 +161,7 @@ class App extends Component {
   createTodoTask(task, time = 0) {
     return {
       task,
+      done: false,
       timerCounter: time,
       timerPlaying: false,
       timerID: null,

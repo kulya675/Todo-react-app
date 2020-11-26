@@ -12,13 +12,7 @@ class Timer extends Component {
     id: PropTypes.number.isRequired,
     onPlayTimer: PropTypes.func.isRequired,
     onPauseTimer: PropTypes.func.isRequired,
-    onTimerDone: PropTypes.func.isRequired,
   };
-
-  componentWillUnmount() {
-    const { onTimerDone } = this.props;
-    onTimerDone();
-  }
 
   playTimer = () => {
     const { id, onPlayTimer } = this.props;
